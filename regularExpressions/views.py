@@ -17,7 +17,9 @@ def check_regex(request):
         print(f"String: {test_string}")
 
         result = re.findall(rf'{regex}', test_string)
+        print(result)
         return HttpResponse(f"Найдено: {result}")
+        print(result)
 
     # Если GET запрос
     return HttpResponse("Отправьте POST запрос через форму")
