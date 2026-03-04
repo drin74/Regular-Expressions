@@ -1,25 +1,34 @@
-from django.db.models.expressions import result
-from django.http import HttpResponse
 from django.shortcuts import render
 import re
 
 def index(request):
-    return render(request,'regularExpressions/base.html')
+    regex = ""
+    test_string = ""
+    matches = []
 
 
-def check_regex(request):
-    # ВРЕМЕННО: просто показываем, что пришло
-    if request.method == 'POST':
-        regex = request.POST.get('regexInput')
-        test_string = request.POST.get('testString')
+    if request.method == "POST":
+        regex = request.POST.get("regexInput", "")
 
-        print(f"Regex: {regex}")
-        print(f"String: {test_string}")
+        # Проверяем, был ли загружен файл
+        if request.FILES.get("fileInput"):
+            uploaded_file = request.FILES["fileInput"]
+            # Читаем содержимое файла
+            test_string = uploaded_file.read().decode('utf-8')
+        else:
+            test_string = request.POST.get("testString", "")
+        try:
+            matches = re.findall(regex, test_string)
+        except re.error:
+            matches = ["Ошибка в регулярном выражении!"]
 
-        result = re.findall(rf'{regex}', test_string)
-        print(result)
-        return HttpResponse(f"Найдено: {result}")
-        print(result)
+    context = {
+        "regex": regex,
+        "test_string": test_string,
+        "matches": matches,
+    }
+    return render(request, "regularExpressions/base.html", context)
 
-    # Если GET запрос
-    return HttpResponse("Отправьте POST запрос через форму")
+
+
+

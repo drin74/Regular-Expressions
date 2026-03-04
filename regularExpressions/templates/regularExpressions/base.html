@@ -1,36 +1,55 @@
+<!-- ТАК ВОТ ТУТ И ГЛАВНЫЕ ИЗМИНЕНИЯ И ВСЯ БЕДА ТУТ БЫЛА В ЕБАННОЙ HTML ну точнее в ебаным 2 сайте я его еще и не вмдел как даун ну тут не сложно понять все так что так  -->
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'regularExpressionsSite/css/style.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Регулярные выражения</title>
 </head>
 <body>
 <div class="container mt-5">
     <h2 class="mb-4">Редактор регулярных выражений</h2>
-
-    <form method="post" action="{% url 'check_regex' %}">
-    {% csrf_token %}  <!-- Обязательно! -->
-    <div class="mb-3">
-        <label for="regexInput" class="form-label">Регулярное выражение</label>
-        <input type="text" class="form-control" id="regexInput" name="regexInput">
-    </div>
-
-    <div class="mb-3">
-        <label for="testString" class="form-label">Строка для проверки</label>
-        <input type="text" class="form-control" id="testString" name="testString">
-    </div>
-    <button type="submit" class="btn btn-primary">Проверить</button>
+        <!--enctype="multipart/form-data"-->
+    <form method="post" enctype="multipart/form-data" action="{% url 'index' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="regexInput" class="form-label">Регулярное выражение</label>
+            <input type="text" class="form-control" id="regexInput" name="regexInput"
+                   value="{{ regex|default:'' }}">
+        </div>
 
         <div class="mb-3">
-        <label for="testString" class="form-label">Строка для Результата </label>
-        <input type="text" class="form-control" id="poisk" name="poisk">
-    </div>
-</form>
+            <label for="testString" class="form-label">Строка для проверки</label>
+            <input type="text" class="form-control" id="testString" name="testString"
+                   value="{{ test_string|default:'' }}">
+        </div>
+<!------------------------------------------------------>
+        <div>
+            <label>Или загрузите файл:<br>
+                <input type="file" name="fileInput">
+            </label>
+        </div>
+<!------------------------------------------------------>
 
+        <button type="submit" class="btn btn-primary">Проверить</button>
+    </form>
+
+    <hr class="my-4">
+
+    <h5>Результаты:</h5>
+    {% if matches %}
+ <!-- Это цикл (то что под этим текстом) Django Template Language. Он берет список matches, который мы передали из Python, и для каждого элемента создает строчку в списке на странице. -->
+        <ul class="list-group">
+            {% for m in matches %}
+                <li class="list-group-item">{{ m }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">Совпадений нет.</p>
+    {% endif %}
 </div>
 </body>
 </html>
-
